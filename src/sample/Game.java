@@ -8,13 +8,13 @@ import java.util.Scanner;
  */
 public class Game {
 
-    private int numberOfGuesses = 0;
+    private int numberOfGuesses;
     private boolean endGame;
     private String userName;
     private String jarItem;
     private int maxItems;
     private int totalItems;
-    private int highScore;
+    private int highScore = 0;
     private int guess;
     private boolean correct;
     private String scoreName;
@@ -22,7 +22,7 @@ public class Game {
     public Game() {
 
         Scanner in = new Scanner(System.in);
-        System.out.print("Please enter user name : ");
+        System.out.printf("Please enter user name (\"Admin\" to customize game): %n");
         userName = in.nextLine();
         user();
     }
@@ -55,10 +55,15 @@ public class Game {
         if (jarItem.toLowerCase().endsWith("y")) {
             //Not going to worry about words like mouse/mice
             // or singular words that end with s, etc.
+            if(jarItem.toLowerCase().endsWith("ay")|| jarItem.endsWith("ey") ||
+                    jarItem.endsWith("iy") || jarItem.endsWith("oy") || jarItem.endsWith("uy")) {
+                jarItem += "s";
+            } else {
 
-            StringBuilder builder = new StringBuilder(jarItem);
-            builder.deleteCharAt(jarItem.length()-1);
-            jarItem = builder.toString() + "ies";
+                StringBuilder builder = new StringBuilder(jarItem);
+                builder.deleteCharAt(jarItem.length() - 1);
+                jarItem = builder.toString() + "ies";
+            }
 
         }
             if (jarItem.toLowerCase().endsWith("s")) {
@@ -70,31 +75,62 @@ public class Game {
     public void randomNumber() {
 
         Random random = new Random();
-        totalItems = random.nextInt(maxItems + 1);
+        totalItems = random.nextInt(maxItems)+1;
     }
 
     public void play() {
-        System.out.printf("The jar is filled with %s%n%n", jarItem.toUpperCase());
-        System.out.printf("The range is between 1 and %d%n", maxItems);
-        Scanner in = new Scanner(System.in);
-        do {
-            correct = false;
-            System.out.printf("Take a guess: %n");
-            guess = in.nextInt();
-            numberOfGuesses ++;
-            if (guess > totalItems) {
-                System.out.printf("Sorry, %d is too high!%n", guess);
-            }
-            if (guess < totalItems) {
-                System.out.printf("Unfortunately %d is too low!%n", guess);
-            }
-            if (guess == totalItems){
-                System.out.printf("Congrats!!! %d was the exact number%n", guess);
-                System.out.printf("It took you %d guesses%n", numberOfGuesses);
-                System.out.print("Would you like to play again?%n");
+        boolean gameOver = false;
+        numberOfGuesses = 0;
+        while (!gameOver) {
+            System.out.printf("The jar is filled with %s%n%n", jarItem.toUpperCase());
+            System.out.printf("The range is between 1 and %d%n", maxItems);
+            Scanner in = new Scanner(System.in);
+            do {
+                correct = false;
+                System.out.printf("Guess how many %s are in the jar: %n", jarItem);
+                guess = in.nextInt();
+                if (guess > maxItems) {
+                    System.out.printf("Oops...the maximum amount of %s that could be in the jar is %d%n", jarItem, maxItems);
+                    System.out.printf("Try a guess that doesn't exceed %d%n", maxItems);
+                    guess = in.nextInt();
+                }
+                numberOfGuesses++;
+                if (guess > totalItems) {
+                    System.out.printf("Sorry, %d is too high!%n", guess);
+                }
+                if (guess < totalItems) {
+                    System.out.printf("Unfortunately %d is too low!%n", guess);
+                }
+                if (guess == totalItems) {
+                    System.out.printf("Congrats!!! %d was the exact number%n", guess);
+                    System.out.printf("It took you %d guesses%n", numberOfGuesses);
+                    if (highScore == 0 || highScore > numberOfGuesses) {
+                        highScore = numberOfGuesses;
+                        System.out.printf("You have the new high score!...%n");
+                        System.out.printf("Enter your name to be immortalized (until someone else defeats you!)%n");
+                        Scanner n = new Scanner(System.in);
+                        scoreName = n.nextLine();
+                    }
+                    if (numberOfGuesses == highScore) {
+                        System.out.printf("You tied the high score but %s did it first%n", scoreName);
+                    }
+                    else {
+                        System.out.printf("Good game, but %s has the high score of %d%n%n", scoreName, highScore);
+                    }
 
-                correct = true;
-            }
-        } while (!correct);
+                    correct = true;
+                    System.out.printf("Would you like to play again?%n (\"yes or no\")");
+                    Scanner ta = new Scanner(System.in);
+                    String tryAgain = ta.nextLine();
+                    if (tryAgain.equalsIgnoreCase("yes") || tryAgain.equalsIgnoreCase("y")) {
+                        randomNumber();
+                        play();
+                    } else {
+                        gameOver = true;
+                        System.exit(0);
+                    }
+                }
+            } while (!correct);
+        }
     }
 }
