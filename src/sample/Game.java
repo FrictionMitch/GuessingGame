@@ -21,10 +21,11 @@ public class Game {
 
     public Game() {
 
-        Scanner in = new Scanner(System.in);
-        System.out.printf("Please enter user name (\"Admin\" to customize game): %n");
-        userName = in.nextLine();
-        user();
+//        Scanner in = new Scanner(System.in);
+//        System.out.printf("Please enter user name (\"Admin\" to customize game): %n");
+//        userName = in.nextLine();
+//        user();
+        fill();
     }
 
     public void user() {
@@ -72,6 +73,12 @@ public class Game {
         }
     }
 
+    public void title() {
+        char[] caps = scoreName.toCharArray();
+        caps[0] = Character.toUpperCase(caps[0]);
+        scoreName = new String(caps);
+    }
+
     public void randomNumber() {
 
         Random random = new Random();
@@ -80,8 +87,8 @@ public class Game {
 
     public void play() {
         boolean gameOver = false;
-        numberOfGuesses = 0;
         while (!gameOver) {
+            numberOfGuesses = 0;
             System.out.printf("The jar is filled with %s%n%n", jarItem.toUpperCase());
             System.out.printf("The range is between 1 and %d%n", maxItems);
             Scanner in = new Scanner(System.in);
@@ -104,15 +111,17 @@ public class Game {
                 if (guess == totalItems) {
                     System.out.printf("Congrats!!! %d was the exact number%n", guess);
                     System.out.printf("It took you %d guesses%n", numberOfGuesses);
+                    if (numberOfGuesses == highScore) {
+                        System.out.printf("You tied the high score but %s did it first%n", scoreName);
+                    } else
                     if (highScore == 0 || highScore > numberOfGuesses) {
                         highScore = numberOfGuesses;
                         System.out.printf("You have the new high score!...%n");
                         System.out.printf("Enter your name to be immortalized (until someone else defeats you!)%n");
                         Scanner n = new Scanner(System.in);
                         scoreName = n.nextLine();
-                    }
-                    if (numberOfGuesses == highScore) {
-                        System.out.printf("You tied the high score but %s did it first%n", scoreName);
+                        title();
+                        System.out.printf("I doubt anyone will beat %s's score%n", scoreName);
                     }
                     else {
                         System.out.printf("Good game, but %s has the high score of %d%n%n", scoreName, highScore);
@@ -124,10 +133,13 @@ public class Game {
                     String tryAgain = ta.nextLine();
                     if (tryAgain.equalsIgnoreCase("yes") || tryAgain.equalsIgnoreCase("y")) {
                         randomNumber();
-                        play();
+
+//                        play();
                     } else {
                         gameOver = true;
-                        System.exit(0);
+//                        System.exit(0);
+//                        highScore = 0;
+                        fill();
                     }
                 }
             } while (!correct);
