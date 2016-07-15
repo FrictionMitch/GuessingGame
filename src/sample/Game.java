@@ -19,6 +19,8 @@ public class Game {
     private boolean correct;
     private String scoreName;
 
+    public String guessString;
+
     public Game() {
 
 //        Scanner in = new Scanner(System.in);
@@ -73,6 +75,15 @@ public class Game {
         }
     }
 
+    public String pluralGuess(String string, Integer integer) {
+        if (integer > 1) {
+            string += "es";
+        } else {
+            return guessString = string;
+        }
+        return guessString = string;
+    }
+
     public void title() {
         char[] caps = scoreName.toCharArray();
         caps[0] = Character.toUpperCase(caps[0]);
@@ -110,7 +121,8 @@ public class Game {
                 }
                 if (guess == totalItems) {
                     System.out.printf("Congrats!!! %d was the exact number%n", guess);
-                    System.out.printf("It took you %d guesses%n", numberOfGuesses);
+                    pluralGuess("guess", numberOfGuesses);
+                    System.out.printf("It took you %d %s%n", numberOfGuesses, guessString);
                     if (numberOfGuesses == highScore) {
                         System.out.printf("You tied the high score but %s did it first%n", scoreName);
                     } else
@@ -128,7 +140,7 @@ public class Game {
                     }
 
                     correct = true;
-                    System.out.printf("Would you like to play again?%n (\"yes or no\")");
+                    System.out.printf("Would you like to play again?%n (\"yes\" or \"no\")%n");
                     Scanner ta = new Scanner(System.in);
                     String tryAgain = ta.nextLine();
                     if (tryAgain.equalsIgnoreCase("yes") || tryAgain.equalsIgnoreCase("y")) {
